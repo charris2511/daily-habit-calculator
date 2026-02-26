@@ -1,0 +1,64 @@
+def calculate_health_score(height, weight, bmi, systolic_bp, diastolic_bp, heart_rate, cholesterol, glucose, insulin):
+    score = 100
+    issues = []
+    
+    # BMI assessment (18.5-24.9 is ideal)
+    if bmi < 18.5 or bmi > 24.9:
+        score -= 10
+        issues.append(f"BMI {bmi} is outside ideal range")
+    
+    # Blood pressure (ideal: <120/80)
+    if systolic_bp >= 130 or diastolic_bp >= 85:
+        score -= 15
+        issues.append(f"Blood pressure {systolic_bp}/{diastolic_bp} is elevated")
+    
+    # Heart rate (60-100 bpm is normal)
+    if heart_rate < 60 or heart_rate > 100:
+        score -= 10
+        issues.append(f"Heart rate {heart_rate} is outside normal range")
+    
+    # Cholesterol (ideal: <200 mg/dL)
+    if cholesterol >= 200:
+        score -= 15
+        issues.append(f"Cholesterol {cholesterol} is elevated")
+    
+    # Glucose (ideal: 70-100 mg/dL fasting)
+    if glucose < 70 or glucose > 100:
+        score -= 15
+        issues.append(f"Glucose {glucose} is outside ideal range")
+    
+    # Insulin (ideal: <12 mIU/L fasting)
+    if insulin > 12:
+        score -= 10
+        issues.append(f"Insulin {insulin} is elevated")
+    
+    score = max(0, score)
+    
+    if score >= 80:
+        status = "Excellent"
+    elif score >= 60:
+        status = "Good"
+    elif score >= 40:
+        status = "Fair"
+    else:
+        status = "Poor"
+    
+    return {
+        "score": score,
+        "status": status,
+        "issues": issues
+    }
+
+
+# Example usage
+result = calculate_health_score(
+    height=175, weight=70, bmi=22.9,
+    systolic_bp=118, diastolic_bp=76,
+    heart_rate=72, cholesterol=190,
+    glucose=95, insulin=8
+)
+
+print(f"Health Score: {result['score']}/100")
+print(f"Status: {result['status']}")
+if result['issues']:
+    print("Areas to improve:", ", ".join(result['issues']))
