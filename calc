@@ -1,64 +1,120 @@
-def calculate_health_score(height, weight, bmi, systolic_bp, diastolic_bp, heart_rate, cholesterol, glucose, insulin):
-    score = 100
-    issues = []
-    
-    # BMI assessment (18.5-24.9 is ideal)
-    if bmi < 18.5 or bmi > 24.9:
-        score -= 10
-        issues.append(f"BMI {bmi} is outside ideal range")
-    
-    # Blood pressure (ideal: <120/80)
-    if systolic_bp >= 130 or diastolic_bp >= 85:
-        score -= 15
-        issues.append(f"Blood pressure {systolic_bp}/{diastolic_bp} is elevated")
-    
-    # Heart rate (60-100 bpm is normal)
-    if heart_rate < 60 or heart_rate > 100:
-        score -= 10
-        issues.append(f"Heart rate {heart_rate} is outside normal range")
-    
-    # Cholesterol (ideal: <200 mg/dL)
-    if cholesterol >= 200:
-        score -= 15
-        issues.append(f"Cholesterol {cholesterol} is elevated")
-    
-    # Glucose (ideal: 70-100 mg/dL fasting)
-    if glucose < 70 or glucose > 100:
-        score -= 15
-        issues.append(f"Glucose {glucose} is outside ideal range")
-    
-    # Insulin (ideal: <12 mIU/L fasting)
-    if insulin > 12:
-        score -= 10
-        issues.append(f"Insulin {insulin} is elevated")
-    
-    score = max(0, score)
-    
-    if score >= 80:
-        status = "Excellent"
-    elif score >= 60:
-        status = "Good"
-    elif score >= 40:
-        status = "Fair"
-    else:
-        status = "Poor"
-    
-    return {
-        "score": score,
-        "status": status,
-        "issues": issues
-    }
+<!DOCTYPE html>
+<html>
+<head>
+<title>Health Behavior Prediction</title>
 
+<style>
+body{
+font-family: Arial;
+background:#f2f5f7;
+padding:40px;
+}
 
-# Example usage
-result = calculate_health_score(
-    height=175, weight=70, bmi=22.9,
-    systolic_bp=118, diastolic_bp=76,
-    heart_rate=72, cholesterol=190,
-    glucose=95, insulin=8
-)
+.container{
+background:white;
+padding:30px;
+max-width:650px;
+margin:auto;
+border-radius:8px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
 
-print(f"Health Score: {result['score']}/100")
-print(f"Status: {result['status']}")
-if result['issues']:
-    print("Areas to improve:", ", ".join(result['issues']))
+h2{
+text-align:center;
+}
+
+input{
+width:100%;
+padding:8px;
+margin-bottom:15px;
+}
+
+button{
+background:#0077cc;
+color:white;
+padding:12px;
+border:none;
+width:100%;
+font-size:16px;
+border-radius:5px;
+cursor:pointer;
+}
+
+.results{
+margin-top:20px;
+font-size:18px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Predicted Health Behaviors</h2>
+
+<h3>Preexisting Health Inputs</h3>
+
+Height (m)
+<input id="height" type="number" step="0.01">
+
+Weight (kg)
+<input id="weight" type="number">
+
+Blood Pressure
+<input id="bp" type="number">
+
+Heart Rate
+<input id="hr" type="number">
+
+Cholesterol
+<input id="cholesterol" type="number">
+
+Glucose
+<input id="glucose" type="number">
+
+Insulin
+<input id="insulin" type="number">
+
+<button onclick="predict()">Predict Health Behaviors</button>
+
+<div class="results" id="output"></div>
+
+</div>
+
+<script>
+
+function predict(){
+
+// Dataset means from descriptive table
+let sleep_hours = 7.002
+let sleep_quality = 2.51
+let work_hours = 8.001
+let physical_activity = 3.038
+let calorie_intake = 2201.43
+let sugar_intake = 60.05
+let alcohol = 2.00
+let smoking = 2.00
+let water = 2.006
+
+document.getElementById("output").innerHTML =
+
+"<b>Predicted Mean Health Behaviors (Dataset Average)</b><br><br>" +
+
+"Sleep Hours: " + sleep_hours.toFixed(2) + "<br>" +
+"Sleep Quality: " + sleep_quality.toFixed(2) + "<br>" +
+"Work Hours: " + work_hours.toFixed(2) + "<br>" +
+"Physical Activity Level: " + physical_activity.toFixed(2) + "<br>" +
+"Calorie Intake: " + calorie_intake.toFixed(0) + " kcal<br>" +
+"Sugar Intake: " + sugar_intake.toFixed(2) + " g<br>" +
+"Alcohol Consumption Level: " + alcohol.toFixed(2) + "<br>" +
+"Smoking Level: " + smoking.toFixed(2) + "<br>" +
+"Water Intake: " + water.toFixed(2) + " L"
+
+}
+
+</script>
+
+</body>
+</html>
