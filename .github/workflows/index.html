@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en"></html>
+<title>Daily Habits Calculator</title>
+
+<style>
+body{
+    margin:0;
+    font-family:'Segoe UI', sans-serif;
+    background:#d9dbcc;
+}
+
+.wrapper{
+    display:flex;
+    height:100vh;
+}
+
+.left{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:40px;
+    color:#3e3e3e;
+}
+
+.right{
+    width:380px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.panel{
+    background:#e9e6df;
+    padding:20px;
+    width:320px;
+    border:1px solid #cfcac2;
+    font-size:13px;
+}
+
+input, select{
+    width:95%;
+    padding:6px;
+    margin:4px 0;
+}
+
+button{
+    margin-top:5px;
+    padding:6px;
+    cursor:pointer;
+}
+
+.more{
+    display:none;
+    margin:5px 0 10px 0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+<div class="left">
+DAILY HABITS CALCULATOR
+</div>
+
+<div class="right">
+<div class="panel">
+
+<select id="diet">
+<option value="vegan">Vegan</option>
+<option value="vegetarian">Vegetarian</option>
+<option value="keto">Keto</option>
+<option value="omni">Omnivore</option>
+</select>
+
+<input id="sleep" type="number" placeholder="Sleep hours">
+<input id="quality" type="number" placeholder="Sleep quality (1–5)">
+<input id="work" type="number" placeholder="Work hours">
+<input id="activity" type="number" placeholder="Activity (hrs/week)">
+<input id="calories" type="number" placeholder="Calories">
+<input id="sugar" type="number" placeholder="Sugar (g)">
+<input id="alcohol" type="number" placeholder="Alcohol level (1–3)">
+<input id="smoking" type="number" placeholder="Smoking level (1–3)">
+<input id="water" type="number" placeholder="Water (L)">
+
+<button onclick="analyze()">Analyze</button>
+
+<div id="output"></div>
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+const dietData = {
+vegan:{sleep:7.3,quality:2.8,work:7.8,activity:3.5,calories:2000,sugar:55,alcohol:1.5,smoking:1.2,water:2.5},
+vegetarian:{sleep:7.1,quality:2.6,work:8.0,activity:3.2,calories:2100,sugar:58,alcohol:1.8,smoking:1.5,water:2.2},
+keto:{sleep:6.8,quality:2.4,work:8.2,activity:2.9,calories:2300,sugar:30,alcohol:2.2,smoking:2.1,water:2.0},
+omni:{sleep:7.0,quality:2.5,work:8.0,activity:3.0,calories:2200,sugar:60,alcohol:2.0,smoking:2.0,water:2.0}
+};
+
+function toggle(id){
+let el = document.getElementById(id);
+if(el){
+    el.style.display = el.style.display === "block" ? "none" : "block";
+}
+}
+
+function getVal(id){
+let val = parseFloat(document.getElementById(id).value);
+return isNaN(val) ? 0 : val;
+}
+
+function analyze(){
+
+function diff(val, avgVal, unit=""){
+    let d = val - avgVal;
+    let sign = d > 0 ? "+" : "";
+    return `Difference vs the average ${name}: ${sign}${d.toFixed(1)} ${unit}`;
+}
+
+
+// clear old output (prevents duplicate IDs issue)
+let outputDiv = document.getElementById("output");
+outputDiv.innerHTML = "";
+
+let dietVal = document.getElementById("diet").value;
+let avg = dietData[dietVal];
+let name = dietVal.charAt(0).toUpperCase()+dietVal.slice(1);
+
+let sleep = getVal("sleep");
+let quality = getVal("quality");
+let work = getVal("work");
+let activity = getVal("activity");
+let calories = getVal("calories");
+let sugar = getVal("sugar");
+let alcohol = getVal("alcohol");
+let smoking = getVal("smoking");
+let water = getVal("water");
+
+// helper to generate unique IDs
+let id = 0;
+function uid(){
+    return "sec" + (id++);
+}
+
+function section(title, content){
+    let sid = uid();
+    return `
+    <div style="margin-bottom:10px;">
+        <b>${title}</b>
+        <button onclick="toggle('${sid}')">See More</button>
+        <div id="${sid}" class="more">${content}</div>
+    </div>
+    `;
+}
+
+/* -------- SLEEP -------- */
+let sleepMsg = sleep >=7 ?
+"Ideal amount of sleep." :
+sleep <7 ?
+"You are getting less sleep on average. Please take note of the following suggestions: Make a routine of sleeping at the same time, keep the bedroom quiet and relaxing at a comfortable temperature, and avoid electronics, large meals, alcohol and caffeine before bedtime." :
+"You are getting more sleep on average. Please take note of the following suggestions: Avoid long naps during the day, exercise regularly but not close to bedtime, and consult a healthcare provider if you have trouble sleeping or feel tired during the day.";
+
+outputDiv.innerHTML += section(
+`Sleep (${sleep} hrs)`,
+`${sleepMsg}<br>${diff(sleep, avg.sleep, "hrs")}`
+);
+
+/* -------- QUALITY -------- */
+let qMsg =
+quality > avg.quality ? `Your sleep quality is better than the average amongst your diet. Keep it up!` :
+quality < avg.quality ? `Your sleep quality is worse than the average amongst your diet. Consider researching and consulting with a doctor if your symptoms align with insomnia, restless legs syndrome, narcolepsy, and sleep apnea.` :
+`Your sleep quality is equal to the average amongst your diet.`;
+
+outputDiv.innerHTML += section(
+"Sleep Quality",
+`${qMsg}<br>${diff(quality, avg.quality)}`
+);
+
+/* -------- WORK -------- */
+let wMsg =
+work > avg.work ? `You work more than the average person amongst your diet. Getting less sleep because of work hours can lead to fatigue, which can translate into other physical ailments such as mental disorders, insulin resistance, immunocompromisation, and overeating. ` :
+work < avg.work ? `You work less than the average person amongst your diet.` :
+`You work at an average level.`;
+
+outputDiv.innerHTML += section(
+"Work Hours",
+`${wMsg}<br>${diff(work, avg.work, "hrs")}`
+);
+/* -------- ACTIVITY -------- */
+// fixed: weekly hours logic
+let aMsg =
+activity >=2.5 ? "You get the recommended amount of exercise as recommended. Keep up the good work!" :
+"You get exercise less often than what is recommended. You may increase the risk of developing cardiovascular disease, type 2 diabetes and metabolic syndrome, infectious diseases, and some cancers.";
+
+outputDiv.innerHTML += section(
+"Physical Activity",
+`${aMsg}<br>${diff(activity, avg.activity, "hrs/week")}`
+);
+
+/* -------- CALORIES -------- */
+let cMsg =
+calories>=1600 && calories<=3000 ? "While caloric intake is not a simple calculation and varies by individual, your intake is within a reasonable range." :
+calories>3000 ? "While caloric intake is not a simple calculation and varies by individual, your intake is above a reasonable range. Consider consulting with a healthcare provider to determine your ideal caloric intake." :
+"While caloric intake is not a simple calculation and varies by individual, your intake is below a reasonable range. Consider consulting with a healthcare provider to determine your ideal caloric intake.";
+
+outputDiv.innerHTML += section(
+"Calories",
+`${cMsg}<br>${diff(calories, avg.calories, "kcal")}`
+);
+
+/* -------- SUGAR -------- */
+let sugMsg = sugar>=50 ? "You fall above the maximum recommended sugar intake per day. Consider lowering your consumption of sugar-sweetened beverages, processed foods, or desserts. Also consider replacing artificial sugars with natural sugars, which can be found in milk, fruits, and vegetables.":
+"You fall below the maximum recommended sugar intake per day. Continue to monitor your sugar consumption and aim to maintain a balanced diet.";
+
+outputDiv.innerHTML += section(
+"Sugar",
+`${sugMsg}<br>${diff(sugar, avg.sugar, "g")}`
+);
+/* -------- ALCOHOL -------- */
+let alcMsg =
+alcohol===1 ? "You are consuming the ideal amount of alcohol for optimal health, which is none. " :
+alcohol===2 ? "You are consuming more alcohol than what is recommended, which can still increase the risk of certain cancers. Even drinking in moderation should be done with caution." :
+"You are consuming significantly more alcohol than what is recommended, which puts you at a heightened risk for chronic disease, certain cancers, or worse. ";
+
+outputDiv.innerHTML += section(
+"Alcohol",
+`${alcMsg}<br>${diff(alcohol, avg.alcohol)}`
+);
+/* -------- SMOKING -------- */
+let smMsg =
+smoking===1 ? " You are smoking at the ideal amount for optimal health, which is not at all. " :
+smoking===2 ? "You are smoking more than what is recommended, which can still increase the risk of numerous diseases and reduce health. Even smoking in moderation should be done with caution. " :
+"You are smoking significantly more than what is recommended, which puts you at a heightened risk for heart disease, stroke, certain cancers, reproductive health effects, or worse. ";
+
+outputDiv.innerHTML += section(
+"Smoking",
+`${smMsg}<br>${diff(smoking, avg.smoking)}`
+);
+/* -------- WATER -------- */
+let wtrMsg =
+water<2 ? "You are drinking less water than what is recommended daily. Consider drinking more water and carrying a water bottle with you to prevent dehydration, which can cause chronic issues and hospitalization. " :
+water<=3 ? "You are drinking the recommended water intake daily. " :
+"You are drinking more water than what is recommended daily. Drinking too much water can lead to hyponatremia, a condition associated with many negative symptoms that can become as serious as seizures and coma.";
+
+outputDiv.innerHTML += section(
+"Water",
+`${wtrMsg}<br>${diff(water, avg.water, "L")}`
+);
+
+}
+
+</script>
+
+</body>
+</html>
