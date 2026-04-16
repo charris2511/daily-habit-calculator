@@ -1,95 +1,111 @@
 <!DOCTYPE html>
-<html lang="en"></html>
-<title>Daily Habits Calculator</title>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Daily Habits Calculator</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI Light', 'Helvetica Neue', sans-serif;
+            background: #d1d4c8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-<style>
-body{
-    margin:0;
-    font-family:'Segoe UI', sans-serif;
-    background:#d9dbcc;
-}
+        .wrapper {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+            max-width: 900px;
+            padding: 20px;
+        }
 
-.wrapper{
-    display:flex;
-    height:100vh;
-}
+        .left {
+            font-family: 'Segoe UI', sans-serif;
+            font-weight: 300;
+            letter-spacing: 2px;
+            font-size: 45px;
+            color: #3e3e3e;
+            text-align: right;
+        }
 
-.left{
-    flex:1;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:40px;
-    color:#3e3e3e;
-}
+        .panel {
+            background: #e9e6df;
+            padding: 40px;
+            width: 400px;
+            border: 1px solid #d1ccc4;
+        }
 
-.right{
-    width:380px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
+        /* Updated CSS for Inputs, Select, and Buttons */
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #c9c5bd;
+            /* Set background to the requested color */
+            background: #e9e6df; 
+            box-sizing: border-box;
+            font-size: 14px;
+            color: #333; /* Added text color for better readability */
+        }
 
-.panel{
-    background:#e9e6df;
-    padding:20px;
-    width:320px;
-    border:1px solid #cfcac2;
-    font-size:13px;
-}
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: 1px solid #c9c5bd;
+            /* Set background to the requested color */
+            background: #e9e6df; 
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        
+        /* Ensure the hover state maintains the look */
+        button:hover { background: #e9e6df; }
 
-input, select{
-    width:95%;
-    padding:6px;
-    margin:4px 0;
-}
-
-button{
-    margin-top:5px;
-    padding:6px;
-    cursor:pointer;
-}
-
-.more{
-    display:none;
-    margin:5px 0 10px 0;
-}
-</style>
+        .more { display: none; padding: 10px; font-size: 13px; color: #444; border-top: 1px solid #d1ccc4; margin-top: 5px; }
+        .toggle-btn { background: none; border: none; color: #666; text-decoration: underline; cursor: pointer; font-size: 12px; padding: 0; }
+        
+        #error { color: #a94442; font-size: 12px; margin-bottom: 10px; }
+    </style>
 </head>
 
 <body>
 
 <div class="wrapper">
 
-<div class="left">
-DAILY HABITS CALCULATOR
-</div>
+<div class="left">DAILY HABITS CALCULATOR</div>
+    <div class="right">
+    <div class="panel">
+        <select id="diet">
+            <option value="vegan">Vegan</option>
+            <option value="vegetarian">Vegetarian</option>
+            <option value="keto">Keto</option>
+            <option value="omni">Omnivore</option>
+        </select>
 
-<div class="right">
-<div class="panel">
+<!-- ✅ error message moved to correct place -->
+        <div id="error" style="color:red; font-size:12px;"></div>
 
-<select id="diet">
-<option value="vegan">Vegan</option>
-<option value="vegetarian">Vegetarian</option>
-<option value="keto">Keto</option>
-<option value="omni">Omnivore</option>
-</select>
+        <input id="sleep" type="number" min="0" max="24" placeholder="Sleep hours">
+        <input id="quality" type="number" min="1" max="5" placeholder="Sleep quality (1–5)">
+        <input id="work" type="number" min="0" max="24" placeholder="Work hours">
+        <input id="activity" type="number" min="0" max="168" placeholder="Activity (hrs/week)">
+        <input id="calories" type="number" min="0" max="5000" placeholder="Calories">
+        <input id="sugar" type="number" min="0" max="500" placeholder="Sugar (g)">
+        <input id="alcohol" type="number" min="1" max="3" placeholder="Alcohol level (1–3)">
+        <input id="smoking" type="number" min="1" max="3" placeholder="Smoking level (1–3)">
+        <input id="water" type="number" min="0" max="5" step="0.1" placeholder="Water (L)">
 
-<input id="sleep" type="number" placeholder="Sleep hours">
-<input id="quality" type="number" placeholder="Sleep quality (1–5)">
-<input id="work" type="number" placeholder="Work hours">
-<input id="activity" type="number" placeholder="Activity (hrs/week)">
-<input id="calories" type="number" placeholder="Calories">
-<input id="sugar" type="number" placeholder="Sugar (g)">
-<input id="alcohol" type="number" placeholder="Alcohol level (1–3)">
-<input id="smoking" type="number" placeholder="Smoking level (1–3)">
-<input id="water" type="number" placeholder="Water (L)">
-
-<button onclick="analyze()">Analyze</button>
-
-<div id="output"></div>
+        <button onclick="analyze()">Analyze</button>
+        <div id="output" style="margin-top: 20px;"></div>
 
 </div>
+
+
 </div>
 
 </div>
@@ -111,18 +127,14 @@ if(el){
 }
 
 function getVal(id){
-let val = parseFloat(document.getElementById(id).value);
-return isNaN(val) ? 0 : val;
+    let val = parseFloat(document.getElementById(id).value);
+    return isNaN(val) ? null : val;
 }
 
 function analyze(){
 
-function diff(val, avgVal, unit=""){
-    let d = val - avgVal;
-    let sign = d > 0 ? "+" : "";
-    return `Difference vs the average ${name}: ${sign}${d.toFixed(1)} ${unit}`;
-}
-
+let errorDiv = document.getElementById("error");
+errorDiv.innerText = "";
 
 // clear old output (prevents duplicate IDs issue)
 let outputDiv = document.getElementById("output");
@@ -131,6 +143,12 @@ outputDiv.innerHTML = "";
 let dietVal = document.getElementById("diet").value;
 let avg = dietData[dietVal];
 let name = dietVal.charAt(0).toUpperCase()+dietVal.slice(1);
+
+function diff(val, avgVal, unit=""){
+    let d = val - avgVal;
+    let sign = d > 0 ? "+" : "";
+    return `Difference vs ${name}: ${sign}${d.toFixed(1)} ${unit}`;
+}
 
 let sleep = getVal("sleep");
 let quality = getVal("quality");
@@ -141,6 +159,36 @@ let sugar = getVal("sugar");
 let alcohol = getVal("alcohol");
 let smoking = getVal("smoking");
 let water = getVal("water");
+
+let inputs = {sleep, quality, work, activity, calories, sugar, alcohol, smoking, water};
+
+let limits = {
+    sleep: [1, 24],
+    quality: [1, 5],
+    work: [1, 24],
+    activity: [1, 168],
+    calories: [0, 5000],
+    sugar: [0, 500],
+    alcohol: [1, 3],
+    smoking: [1, 3],
+    water: [0, 5]
+};
+
+for (let key in inputs){
+    let val = inputs[key];
+    let [min, max] = limits[key];
+
+    if (val === null){
+        errorDiv.innerText = `Please fill in all fields.`;
+        return;
+    }
+
+    if (val < min || val > max){
+        errorDiv.innerText = `${key} must be between ${min} and ${max}.`;
+        return;
+    }
+}
+
 
 // helper to generate unique IDs
 let id = 0;
