@@ -208,11 +208,9 @@ function section(title, content){
 }
 
 /* -------- SLEEP -------- */
-let sleepMsg = sleep >=7 ?
-"Ideal amount of sleep." :
-sleep <7 ?
-"You are getting less sleep on average. Please take note of the following suggestions: Make a routine of sleeping at the same time, keep the bedroom quiet and relaxing at a comfortable temperature, and avoid electronics, large meals, alcohol and caffeine before bedtime." :
-"You are getting more sleep on average. Please take note of the following suggestions: Avoid long naps during the day, exercise regularly but not close to bedtime, and consult a healthcare provider if you have trouble sleeping or feel tired during the day.";
+let sleepMsg = sleep >=7 ? "You are getting more sleep on average. Please take note of the following suggestions: Avoid long naps during the day, exercise regularly but not close to bedtime, and consult a healthcare provider if you have trouble sleeping or feel tired during the day.":
+sleep <7 ? "You are getting less sleep on average. Please take note of the following suggestions: Make a routine of sleeping at the same time, keep the bedroom quiet and relaxing at a comfortable temperature, and avoid electronics, large meals, alcohol and caffeine before bedtime." :
+"Ideal amount of sleep." ;
 
 outputDiv.innerHTML += section(
 `Sleep (${sleep} hrs)`,
