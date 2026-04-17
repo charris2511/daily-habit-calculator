@@ -15,6 +15,6 @@ Welcome! This repository serves as a progress tracker for my senior seminar proj
 * smoking level and
 * water intake in liters
 
-Health analyses and personalized reecommendations are based on data from the CDC and NIH.
+They will then be given health analyses and personalized reecommendations, with information based on data from the CDC and NIH.
 
 The link to the website is [here.](https://charris2511.github.io/daily-habit-calculator/) No installation is necessary, just fill in the requested information and analyze your health!
