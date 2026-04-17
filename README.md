@@ -1,5 +1,8 @@
 # daily habit calculator
 
+<img width="1889" height="947" alt="image" src="https://github.com/user-attachments/assets/6e58a0d3-da67-43d8-9f46-28eefdda9ec6" />
+
+
 Welcome! This repository serves as a progress tracker for my senior seminar project, Daily Habit Calculator. This is a calculator that assesses the health of users based on their diet. Users are encouraged to input the following health data:
 
 * how many hours they sleep per day
